@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>水平瀑布流加载</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        .list {
+            margin: 50px auto;
+            width: 1200px;
+            border: 1px solid black;
+
+        }
+        img {
+            box-sizing: border-box;
+            padding: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+
+        }
+
+
+    </style>
+</head>
+<body>
+    <div class="list">
+    </div>
+    <script >
+
+        var obj = document.querySelector('.list');
+        var imgList = [];
+        var picLength = 0;
+        var imgLength = 16;
+        window.addEventListener('load',function () {
+            for (var i=1;i<imgLength+1;i++){
+                initImg(i);
+            };
+            this.addEventListener('scroll',function () {
+                picLength = 0;
+                if (checkLoading()){
+                    for (var i=1;i<51;i++){
+                        imgLength = 51;
+                        initImg(i)
+                    }
+
+                }
+            });
+        });
+        
+
+        
+        function initImg(i) {
+            var oImg = document.createElement('img');
+            oImg.src = 'img/'+ i +'.jpg';
+            imgList.push(oImg);
+            oImg.onload = function () {
+                picLength ++;
+                if (picLength == imgLength) {
+                    formate();
+                }
+            };
+        }
+        
+        function formate() {
+            var line = Math.floor(imgLength/4);
+            for (var j=0;j<line;j++){
+                var ww = 0;
+                for (var i=0;i<4;i++){
+                    imgList[j*4+i].index = imgList[j*4+i].width/imgList[j*4+i].height;
+                    var w = imgList[j*4+i].index*300;
+                    ww += w;
+                }
+                var h = 1200*300/ww;
+                for (var i=0;i<4;i++){
+                    imgList[j*4+i].style.width = h*imgList[j*4+i].index + 'px';
+                    imgList[j*4+i].style.height = h + 'px';
+                    obj.appendChild(imgList[j*4+i]);
+                }
+            }
+
+        }
+
+        function checkLoading(){
+            var aContent = document.getElementsByTagName('img');
+            var lastTop = aContent[aContent.length-1].offsetTop;
+            var scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+            var  pageHeight = document.documentElement.clientHeight || document.body.clientHeight;
+            if (scrollTop + pageHeight > lastTop) {
+                return true;
+            }
+        };
+
+    </script>
+
+</body>
+</html>
